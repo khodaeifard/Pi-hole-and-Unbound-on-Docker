@@ -1,0 +1,65 @@
+version: '2'
+
+services:
+  pihole:
+    container_name: pihole_v2
+    image: pihole/pihole:latest
+    hostname: pihole
+#     cap_add: # Uncomment if you want to use Pi-Hole for DHCP
+#       - NET_ADMIN
+    ports:
+      - "53/tcp"
+      - "53/udp"
+#     - "67/udp" # Uncomment if you want to use Pi-Hole for DHCP
+      - "80/tcp"
+    networks:
+      ph_network:
+       ipv4_address: 192.168.178.5
+       priority: 1000
+      ph_bridge:
+       ipv4_address: 192.168.100.2
+       priority: 900
+    environment:
+      FTLCONF_webserver_api_password: 'password'
+      PIHOLE_DNS_: '192.168.178.4#5335'
+      TZ: 'Europe/Vienna'
+      DNSMASQ_LISTENING: local
+    volumes:
+      - '/volume1/docker/pihole_v2/pihole:/etc/pihole'
+      - '/volume1/docker/pihole_v2/dnsmasq.d:/etc/dnsmasq.d/'
+#   cap_add:
+#     - NET_ADMIN # Required if you are using Pi-hole as your DHCP server, else not needed
+    restart: unless-stopped
+  unbound:
+    container_name: unbound_v2
+    image: "klutchell/unbound:latest"
+    devices:
+      - "/dev/random:/dev/random"
+      - "/dev/urandom:/dev/urandom"
+    ports:
+      - "5335:53/tcp"
+      - "5335:53/udp"
+    networks: 
+      ph_network:
+        ipv4_address: 192.168.178.4
+#    volumes:
+#      - '/volume1/docker/unbound_v2:/opt/unbound/etc/unbound/'
+    restart: unless-stopped
+networks:
+    ph_bridge:
+      driver: bridge
+      ipam:
+        config:
+          - subnet: 192.168.100.0/24
+            gateway: 192.168.100.1
+            ip_range: 192.168.100.0/24
+    ph_network:
+      name: ph_network
+      driver: macvlan
+      driver_opts:
+        parent: eth0
+      ipam:
+        config:
+          - subnet: 192.168.178.0/24
+            ip_range: 192.168.178.0/24
+            gateway: 192.168.178.254
