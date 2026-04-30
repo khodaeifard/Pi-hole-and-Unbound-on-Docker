@@ -5,6 +5,7 @@
 Using Container Manager => Project 
 
 I have deleted 
+
     ###########################################################################
     # LOCAL ZONE
     ###########################################################################
@@ -18,6 +19,8 @@ I have deleted
     ###########################################################################
 
     include: /opt/unbound/etc/unbound/forward-records.conf
+
+    
 from unbound config file. Maybe befor that create 3 files:
 a-records.conf
 srv-records.conf
