@@ -1,5 +1,5 @@
 - Change password
-- Chnage Volumes
+- Change volumes
 - Maybe DNS Port
 
 Using Container Manager => Project 
