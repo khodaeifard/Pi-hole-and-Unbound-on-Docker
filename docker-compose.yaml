@@ -21,9 +21,9 @@ services:
        priority: 900
     environment:
       FTLCONF_webserver_api_password: 'password'
-      PIHOLE_DNS_: '192.168.178.4#53'
       TZ: 'Europe/Vienna'
-      DNSMASQ_LISTENING: local
+      FTLCONF_dns_upstreams: "192.168.178.4#53"
+      FTLCONF_dns_listeningMode: "local"
     volumes:
       - '/volume1/docker/pihole/pihole:/etc/pihole'
       - '/volume1/docker/pihole/dnsmasq.d:/etc/dnsmasq.d/'
